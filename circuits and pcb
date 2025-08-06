@@ -1,0 +1,67 @@
+Project Showcase: Custom PCB & Circuit Design for Robotic Sensor Array
+This document details the design and development of a custom Printed Circuit Board (PCB) for the sensor array used in my autonomous robotics projects. The decision to move from a breadboard prototype to a custom PCB was driven by the need for enhanced reliability, a compact form factor, and a more professional, robust final product.
+
+1. Design Motivation & Objectives
+Prototyping on breadboards is excellent for initial testing, but it suffers from issues like loose connections and signal noise, which are critical failure points in a fast-moving robot.
+
+The primary objectives for designing a custom PCB were:
+
+Improve Reliability: Eliminate wiring errors and ensure all components have secure, soldered connections.
+
+Optimize Form Factor: Create a compact, custom-shaped board that integrates seamlessly with the robot's chassis.
+
+Enhance Signal Integrity: Reduce electronic noise by creating direct, optimized paths for signals and implementing power/ground planes.
+
+Professionalism: Develop a finished product that demonstrates end-to-end hardware design skills.
+
+2. Circuit Design & Schematic
+The circuit is designed as an array of IR (Infrared) sensors for line detection. Each sensor unit consists of:
+
+An IR LED which acts as a transmitter, emitting infrared light onto the surface below the robot.
+
+A Phototransistor which acts as a receiver. Its conductivity changes based on the amount of infrared light it receives.
+
+Operating Principle:
+
+When the sensor is over a white surface, most of the IR light is reflected, causing the phototransistor to conduct heavily.
+
+When over a black surface, most of the IR light is absorbed, and the phototransistor's conductivity drops significantly.
+
+This change is read as a digital or analog signal by the microcontroller, allowing the robot to "see" the line. The circuit includes current-limiting resistors for the LEDs and pull-up/pull-down resistors for the phototransistors to ensure stable readings.
+
+3. PCB Layout & Routing
+The PCB was designed using Eagle CAD. The process involved translating the schematic into a physical layout.
+
+Key Design Considerations:
+
+Component Placement: The IR sensors were arranged in an arc to provide a wide field of view for detecting the line, allowing the robot to anticipate curves.
+
+Trace Routing: Signal traces (in blue) were kept as short and direct as possible. Power traces (in red) were made wider to handle current demands.
+
+Ground Plane: A copper pour (or ground plane) was considered to provide a common ground reference, which is crucial for reducing noise and improving signal integrity.
+
+Ergonomics: Mounting holes were included for easy and secure attachment to the robot chassis.
+
+Final PCB Layouts
+Below are the final board layouts designed in Eagle, showing the component placement, copper traces, and board outline.
+
+Final PCB layout for the primary line-following sensor array, showing the curved placement of sensors.
+
+An alternative PCB layout for a different sensor configuration, demonstrating adaptability in design.
+
+4. Tools & Skills Demonstrated
+Design Software: Eagle CAD, KiCad
+
+Skills:
+
+Schematic Capture & Circuit Design
+
+Component Selection
+
+Multi-layer PCB Layout & Routing
+
+Design for Manufacturability (DFM) principles
+
+Signal Integrity & Noise Reduction Techniques
+
+This project was a valuable exercise in practical electronics engineering, moving from a theoretical circuit diagram to a tangible, reliable piece of hardware.
