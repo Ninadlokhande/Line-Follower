@@ -1,0 +1,116 @@
+/*
+ * =================================================================
+ * PID Line Follower Robot Code for an 8-Sensor Array
+ * =================================================================
+ */
+
+// ============== 1. MOTOR & SENSOR PIN DEFINITIONS ==============
+// --- Motor A (Left Motor) ---
+const int ENA = 5;
+const int IN1 = 7;
+const int IN2 = 8;
+
+// --- Motor B (Right Motor) ---
+const int ENB = 6;
+const int IN3 = 9;
+const int IN4 = 10;
+
+// --- Sensor Array Pins ---
+const int SENSOR_PINS[8] = {A0, A1, A2, A3, A4, A5, A6, A7};
+int sensor_values[8];
+
+// ============== 2. PID CONTROLLER CONSTANTS ==============
+// --- Tune these values for your specific robot ---
+float Kp = 0.1;
+float Ki = 0.0001;
+float Kd = 0.5;
+
+// --- PID Variables ---
+float error = 0;
+float last_error = 0;
+float integral = 0;
+float derivative = 0;
+float correction = 0;
+
+// --- Speed Settings ---
+const int MAX_SPEED = 150;
+const int BASE_SPEED = 120;
+
+// =================================================================
+//                           SETUP FUNCTION
+// =================================================================
+void setup() {
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(ENB, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+
+  for (int i = 0; i < 8; i++) {
+    pinMode(SENSOR_PINS[i], INPUT);
+  }
+  Serial.begin(9600);
+}
+
+// =================================================================
+//                            MAIN LOOP
+// =================================================================
+void loop() {
+  error = calculate_error();
+  calculate_pid();
+  adjust_motors();
+  // last_error = error; 
+  delay(10);
+}
+
+// =================================================================
+//                        HELPER FUNCTIONS
+// =================================================================
+
+float calculate_error() {
+  float position = 0;
+  float sum = 0;
+  bool on_line = false;
+
+  for (int i = 0; i < 8; i++) {
+    sensor_values[i] = analogRead(SENSOR_PINS[i]);
+    if (sensor_values[i] > 400) {
+        on_line = true;
+        position += (float)sensor_values[i] * (i * 1000);
+        sum += sensor_values[i];
+    }
+  }
+
+  if (!on_line) {
+    return 3500;
+  }
+
+  return (position / sum); 
+}
+
+void calculate_pid() {
+  integral += error;
+  derivative = error - last_error;
+  correction = (Kp * error) + (Ki * integral) + (Kd * derivative);
+}
+
+void adjust_motors() {
+  int left_speed = BASE_SPEED - correction;
+  int right_speed = BASE_SPEED + correction;
+
+  left_speed = constrain(left_speed, 0, MAX_SPEED);
+  right_speed = constrain(right_speed, 0, MAX_SPEED);
+
+  move_motors(left_speed, right_speed);
+}
+
+void move_motors(int left_speed, int right_speed) {
+  digitalWrite(IN1, HIGH);
+  digitalWrite(IN2, LOW);
+  analogWrite(ENA, left_speed);
+
+  digitalWrite(IN3, HIGH);
+  digitalWrite(IN4, LOW);
+  analogWrite(ENB, right_speed);
+}
